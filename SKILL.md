@@ -10,7 +10,8 @@ tools:
 metadata: {"hermes": {"tags": ["finance", "python", "reporting", "cross-asset", "chinese"], "category": "finance", "requires_toolsets": ["terminal"]}, "openclaw": {"requires": {"bins": ["python3"]}}}
 ---
 
-# Weekly Financial Report
+# Global Macro and Cross-Asset Weekly
+## 环球宏观与多资产周度观察
 
 ## When to Use
 

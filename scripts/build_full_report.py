@@ -427,7 +427,7 @@ style.element.rPr.rFonts.set(qn('w:eastAsia'), '微软雅黑')
 
 # Title
 title = doc.add_heading('', level=0)
-run = title.add_run('商品期货、股指、债券与汇率 周度报告')
+run = title.add_run('环球宏观与多资产周度观察')
 run.font.size = Pt(22)
 run.font.color.rgb = RGBColor(0x1a, 0x1a, 0x2e)
 title.alignment = WD_ALIGN_PARAGRAPH.CENTER

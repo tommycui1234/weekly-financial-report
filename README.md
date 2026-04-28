@@ -1,4 +1,5 @@
-# Weekly Financial Report
+# Global Macro and Cross-Asset Weekly
+## 环球宏观与多资产周度观察
 
 A cross-platform agent skill that produces a comprehensive weekly cross-asset financial report as a Word document.
 
