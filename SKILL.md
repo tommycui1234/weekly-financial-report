@@ -58,15 +58,29 @@ Run this snippet to derive the report window. Proceed immediately; do not ask th
 from datetime import date, timedelta
 
 today = date.today()
-# Roll back to the most recent Friday (weekday 4)
-days_since_friday = (today.weekday() - 4) % 7
-WEEK_END    = today - timedelta(days=days_since_friday)
-WEEK_START  = WEEK_END - timedelta(days=4)       # Monday
-PREV_FRIDAY = WEEK_END - timedelta(days=7)       # Friday of prior week
-YTD_START   = date(WEEK_END.year - 1, 12, 31)   # Dec 31 of prior year
+# Mon–Fri: use today as WEEK_END (WTD or full week)
+# Sat–Sun: roll back to the Friday that just passed
+if today.weekday() < 5:       # Mon=0 … Fri=4
+    WEEK_END = today
+else:                          # Sat=5, Sun=6
+    WEEK_END = today - timedelta(days=today.weekday() - 4)
+
+WEEK_START  = WEEK_END - timedelta(days=WEEK_END.weekday())  # Monday of WEEK_END's week
+PREV_FRIDAY = WEEK_START - timedelta(days=3)                  # Friday of the preceding week (change baseline)
+YTD_START   = date(WEEK_END.year - 1, 12, 31)
 
 print(WEEK_START, WEEK_END, PREV_FRIDAY, YTD_START)
 ```
+
+**What each variable means:**
+
+| Variable | Mon Apr 28 example | Fri May 1 example | Sat/Sun Apr 26–27 example |
+|----------|--------------------|-------------------|---------------------------|
+| `WEEK_END` | Apr 28 (today) | May 1 (today) | Apr 25 (Friday just passed) |
+| `WEEK_START` | Apr 28 (Monday) | Apr 27 (Monday) | Apr 21 (Monday) |
+| `PREV_FRIDAY` | Apr 25 (Friday before this week) | Apr 24 (Friday before this week) | Apr 18 (Friday before that week) |
+| Change formula | Apr 28 vs Apr 25 | May 1 vs Apr 24 | Apr 25 vs Apr 18 |
+| Label | `WTD涨跌幅` | `周涨跌幅` | `周涨跌幅` |
 
 The user may override any date by passing them explicitly after the command.
 
