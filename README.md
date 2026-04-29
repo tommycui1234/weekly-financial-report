@@ -100,7 +100,8 @@ openclaw skills list | grep weekly
 ```
 ~/weekly-report-output/          # default; override with WEEKLY_REPORT_DIR env var
 ├── docs/
-│   └── 2026-04-24_综合周度报告.docx
+│   ├── 2026-04-24_综合周度报告.docx
+│   └── 2026-04-24_综合周度报告.pdf   ← auto-generated alongside docx
 └── charts/
     ├── commodity_weekly_cumulative.png
     ├── index_weekly_cumulative.png
@@ -183,6 +184,10 @@ python ~/weekly-financial-report/scripts/build_full_report.py \
 - `matplotlib >= 3.8`
 - `numpy`
 - Tavily MCP server (for macro news; required by Claude Code, Hermes, and OpenClaw via their Tavily integrations)
+
+**PDF output (optional — one of the following):**
+- `docx2pdf` (`pip install docx2pdf`) — uses Microsoft Word on macOS/Windows; recommended
+- LibreOffice — fallback on Linux or macOS without Word (`brew install --cask libreoffice`)
 
 ---
 

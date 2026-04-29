@@ -133,7 +133,9 @@ The script runs in ~1–2 minutes (yfinance ~30s + akshare ~20s + charts ~10s + 
 
 ```
 ~/weekly-report-output/
-├── docs/{WEEK_END}_综合周度报告.docx    ← final Word report
+├── docs/
+│   ├── {WEEK_END}_综合周度报告.docx    ← Word report
+│   └── {WEEK_END}_综合周度报告.pdf     ← PDF (auto-converted from docx)
 └── charts/
     ├── commodity_weekly_cumulative.png
     ├── index_weekly_cumulative.png

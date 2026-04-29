@@ -695,4 +695,32 @@ p.alignment = WD_ALIGN_PARAGRAPH.CENTER
 
 output_path = f'{OUTPUT_DOC_DIR}/{WEEK_END}_综合周度报告.docx'
 doc.save(output_path)
-print(f"\n✅ Report saved to: {output_path}")
+print(f"\n✅ DOCX saved to: {output_path}")
+
+# ── PDF conversion ────────────────────────────────────────────────────────────
+pdf_path = output_path.replace('.docx', '.pdf')
+_pdf_ok = False
+
+try:
+    from docx2pdf import convert
+    convert(output_path, pdf_path)
+    _pdf_ok = True
+except ImportError:
+    # docx2pdf not installed — try LibreOffice CLI
+    try:
+        import subprocess as _sp
+        r = _sp.run(
+            ['libreoffice', '--headless', '--convert-to', 'pdf',
+             '--outdir', OUTPUT_DOC_DIR, output_path],
+            capture_output=True, text=True, timeout=60
+        )
+        _pdf_ok = r.returncode == 0
+        if not _pdf_ok:
+            print(f"   LibreOffice stderr: {r.stderr.strip()[:200]}")
+    except FileNotFoundError:
+        print("⚠️  PDF skipped: install docx2pdf (pip install docx2pdf) or LibreOffice")
+except Exception as e:
+    print(f"⚠️  PDF conversion failed: {e}")
+
+if _pdf_ok:
+    print(f"✅ PDF  saved to: {pdf_path}")
