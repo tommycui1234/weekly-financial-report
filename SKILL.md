@@ -75,12 +75,12 @@ print(WEEK_START, WEEK_END, PREV_FRIDAY, YTD_START)
 
 **What each variable means:**
 
-| Variable | Mon Apr 28 example | Fri May 1 example | Sat/Sun Apr 26–27 example |
-|----------|--------------------|-------------------|---------------------------|
-| `WEEK_END` | Apr 28 (today) | May 1 (today) | Apr 25 (Friday just passed) |
-| `WEEK_START` | Apr 28 (Monday) | Apr 27 (Monday) | Apr 21 (Monday) |
-| `PREV_FRIDAY` | Apr 25 (Friday before this week) | Apr 24 (Friday before this week) | Apr 18 (Friday before that week) |
-| Change formula | Apr 28 vs Apr 25 | May 1 vs Apr 24 | Apr 25 vs Apr 18 |
+| Variable | Tue Apr 28 (mid-week) | Fri May 1 (end of week) | Sat Apr 25 or Sun Apr 26 (weekend) |
+|----------|-----------------------|-------------------------|-------------------------------------|
+| `WEEK_END` | Apr 28 (today) | May 1 (today) | Apr 24 (Friday just passed) |
+| `WEEK_START` | Apr 27 (Monday) | Apr 27 (Monday) | Apr 20 (Monday) |
+| `PREV_FRIDAY` | Apr 24 (Friday before this week) | Apr 24 (Friday before this week) | Apr 17 (Friday before that week) |
+| Change formula | Apr 28 vs Apr 24 | May 1 vs Apr 24 | Apr 24 vs Apr 17 |
 | Label | `WTD涨跌幅` | `周涨跌幅` | `周涨跌幅` |
 
 The user may override any date by passing them explicitly after the command.
