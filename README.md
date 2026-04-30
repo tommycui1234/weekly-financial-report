@@ -127,7 +127,7 @@ python ~/weekly-financial-report/scripts/build_full_report.py \
 ## Report Structure
 
 ```
-Title: 商品期货、股指、债券与汇率 周度报告
+Title: 环球宏观与多资产周度观察
 Subtitle: 报告期间 | 数据截至各市场最新收盘，不同市场收盘日期可能不同
 
 一、本周宏观事件   (8 items — China 5, International 3)
@@ -150,7 +150,7 @@ The report can be run Mon–Sun. Dates are auto-calculated:
 |---------|----------|--------------|
 | Mon–Thu | Today | `WTD涨跌幅` |
 | Fri | Today (Friday) | `周涨跌幅` |
-| Sat–Sun | Last Friday | `周涨跌幅` |
+| Sat–Sun | The Friday that just passed (1–2 days ago) | `周涨跌幅` |
 
 Each asset uses its own last available close (Option A). Asian and US markets may have different last-close dates on mid-week runs — the subtitle notes this.
 
@@ -167,7 +167,7 @@ python ~/weekly-financial-report/scripts/build_full_report.py \
 | Position | Arg | Default |
 |----------|-----|---------|
 | argv[1] | WEEK_START | Auto (Monday of current week) |
-| argv[2] | WEEK_END | Auto (today or last Friday) |
+| argv[2] | WEEK_END | Auto (today if Mon–Fri; the Friday that just passed if Sat–Sun) |
 | argv[3] | PREV_FRIDAY | Auto (WEEK_START − 3 days) |
 | argv[4] | YTD_START | Auto (Dec 31 of prior year) |
 | argv[5] | OUTPUT_CHARTS_DIR | `~/weekly-report-output/charts` |
