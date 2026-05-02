@@ -100,7 +100,7 @@ def add_caption(doc, text):
 
 MPL_SCRIPT = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'chart_mpl.py')
 
-def gen_chart(data_json, title, subtitle, output_path, height=700, series_field="market", y_title="% Change", y_format=".1f", colorscheme="category10", legend_cols=0, x_ticks=6, auto_focus_y=False):
+def gen_chart(data_json, title, subtitle, output_path, height=700, series_field="market", y_title="% Change", y_format=".1f", colorscheme="category10", legend_cols=0, x_ticks=6, auto_focus_y=False, inline_labels=False):
     """Generate chart using matplotlib-based script"""
     import subprocess, os
     cmd = [
@@ -122,6 +122,8 @@ def gen_chart(data_json, title, subtitle, output_path, height=700, series_field=
         cmd.extend(["--legend-columns", str(legend_cols)])
     if auto_focus_y:
         cmd.append("--auto-focus-y")
+    if inline_labels:
+        cmd.append("--inline-labels")
     r = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
     if r.stdout:
         print(r.stdout.strip())
@@ -281,16 +283,16 @@ for sym, lbl in cn_futures.items():
         print(f"   ⚠️ [futures] {lbl}: no data")
 _chart_sub = f"Since {YTD_START} → {WEEK_END}"
 comm_json = json.dumps(comm_all)
-gen_chart(comm_json, "", _chart_sub,
-          f"{OUTPUT_DIR}/commodity_weekly_cumulative.png", legend_cols=3)
+gen_chart(comm_json, "YTD (year to date)", _chart_sub,
+          f"{OUTPUT_DIR}/commodity_weekly_cumulative.png", legend_cols=3, inline_labels=True)
 
 # 3) Stock Indices
 index_data = []
 for k in ["Nasdaq", "Dow Jones", "S&P 500", "HSI", "Shanghai Composite"]:
     if k in yf_daily:
         index_data.extend(yf_daily[k])
-gen_chart(json.dumps(index_data), "", _chart_sub,
-          f"{OUTPUT_DIR}/index_weekly_cumulative.png", legend_cols=3)
+gen_chart(json.dumps(index_data), "YTD (year to date)", _chart_sub,
+          f"{OUTPUT_DIR}/index_weekly_cumulative.png", legend_cols=3, inline_labels=True)
 
 # 4) China bond yield — absolute yield (%)
 print("   China bond chart...")
