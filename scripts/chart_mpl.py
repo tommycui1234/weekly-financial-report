@@ -50,8 +50,6 @@ def parse_args():
     parser.add_argument('--y-domain', default='', help='Y axis min,max (e.g., "0,100")')
     parser.add_argument('--auto-focus-y', action='store_true', help='Auto focus Y on data range')
     parser.add_argument('--legend-columns', type=int, default=0, help='Number of legend columns')
-    parser.add_argument('--inline-labels', action='store_true',
-                        help='Replace bottom legend with right-side inline labels showing name + last value')
     return parser.parse_args()
 
 def main():
@@ -77,8 +75,7 @@ def main():
     fig.patch.set_facecolor('white')
     
     is_temporal = args.x_type == 'temporal'
-    label_items = []  # populated when --inline-labels is set
-
+    
     for i, (name, sdata) in enumerate(sorted(series.items())):
         x_vals = sdata['x']
         y_vals = sdata['y']
@@ -92,17 +89,8 @@ def main():
         
         ax.plot(x_vals, y_vals, color=color, linestyle=ls, linewidth=2.5,
                 label=name, alpha=0.85, marker='', markersize=0)
-
-        # Collect last point for inline labels
-        if args.inline_labels and y_vals:
-            label_items.append({
-                'name': name,
-                'last_y': y_vals[-1],
-                'last_x': x_vals[-1],
-                'color': color,
-            })
-
-        # Last value label (non-inline mode)
+        
+        # Last value label
         if args.last_value and y_vals:
             last_y = y_vals[-1]
             last_x = x_vals[-1] if is_temporal else x_vals[-1]
@@ -198,70 +186,26 @@ def main():
             title_text += '\n' + args.subtitle
         ax.set_title(title_text, fontsize=TITLE_FONT, fontweight='bold', pad=15, linespacing=1.3)
     
-    # ── Inline right-side labels OR bottom legend ─────────────────────────────
-    if args.inline_labels and label_items:
-        # Sort highest-to-lowest by last value
-        label_items.sort(key=lambda d: d['last_y'], reverse=True)
-
-        # Anti-collision: ensure minimum vertical gap between labels
-        y_lo, y_hi = ax.get_ylim()
-        min_gap = (y_hi - y_lo) * 0.055   # 5.5% of y-range
-        adjusted_ys = []
-        for i, item in enumerate(label_items):
-            ly = item['last_y']
-            if i == 0:
-                adjusted_ys.append(ly)
-            else:
-                prev = adjusted_ys[-1]
-                adjusted_ys.append(min(ly, prev - min_gap))
-
-        # Draw labels
-        for item, adj_y in zip(label_items, adjusted_ys):
-            abs_ly = abs(item['last_y'])
-            sign = '+' if item['last_y'] >= 0 else ''
-            if abs_ly < 10:
-                val_str = f"{sign}{item['last_y']:.2f}%"
-            elif abs_ly < 100:
-                val_str = f"{sign}{item['last_y']:.1f}%"
-            else:
-                val_str = f"{sign}{item['last_y']:.0f}%"
-
-            ax.annotate(
-                f"{item['name']} {val_str}",
-                xy=(item['last_x'], item['last_y']),
-                xytext=(10, 0),
-                textcoords='offset points',
-                fontsize=11, fontweight='bold',
-                color=item['color'],
-                va='center', ha='left',
-                annotation_clip=False,
-            )
-
-        # Remove legend; compress plot area rightward to leave room for labels
-        leg = ax.get_legend()
-        if leg:
-            leg.remove()
-        plt.tight_layout(rect=[0, 0.02, 0.76, 0.98])
-
+    # Legend
+    n_series = len(series)
+    if args.legend_columns > 0:
+        ncols = args.legend_columns
+    elif n_series <= 4:
+        ncols = n_series
+    elif n_series <= 6:
+        ncols = 3
+    elif n_series <= 8:
+        ncols = 4
     else:
-        # Standard bottom legend
-        n_series = len(series)
-        if args.legend_columns > 0:
-            ncols = args.legend_columns
-        elif n_series <= 4:
-            ncols = n_series
-        elif n_series <= 6:
-            ncols = 3
-        elif n_series <= 8:
-            ncols = 4
-        else:
-            ncols = n_series // 2
-
-        ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.10),
-                  ncol=ncols, fontsize=LEGEND_FONT, frameon=True,
-                  fancybox=True, shadow=False, edgecolor='#cccccc',
-                  handlelength=2.5)
-        plt.tight_layout(rect=[0, 0.05, 1, 0.98])
+        ncols = n_series // 2
+    
+    legend = ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.10),
+                       ncol=ncols, fontsize=LEGEND_FONT, frameon=True,
+                       fancybox=True, shadow=False, edgecolor='#cccccc',
+                       handlelength=2.5)
+    
+    # Tight layout with room for legend below
+    plt.tight_layout(rect=[0, 0.05, 1, 0.98])
     
     # Save
     os.makedirs(os.path.dirname(args.output) or '.', exist_ok=True)
